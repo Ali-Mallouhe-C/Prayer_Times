@@ -1,0 +1,94 @@
+<div class="container">
+    <header>
+        <h1>مواقيت الصلاة</h1>
+        <input type="search" [(ngModel)]="searchTirm" placeholder="أدخل اسم المدينة هنا" id="">
+        <button (click)="searchAboutCity()">بحث</button>
+    </header>
+
+    @if (loading) {
+        <div class="loading">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    }
+
+    @if (showContent && !loading) {
+        <section>
+            <div class="general-info">
+                <h2 >معلومات عن المدينة : </h2>
+                <div class="info">
+                    <p class="info-title">اسم المدينة</p>
+                    <p class="info">{{city.name}}</p>
+                </div>
+                <div class="info">
+                    <p class="info-title">اسم الدولة</p>
+                    <p class="info">{{city.country}}</p>
+                </div>
+                <div class="info">
+                    <p class="info-title">خط الطول</p>
+                    <p class="info">{{city.longitude}}</p>
+                </div>
+                <div class="info">
+                    <p class="info-title">خط العرض</p>
+                    <p class="info">{{city.latitude}}</p>
+                </div>
+            </div>
+
+            <div class="general-info">
+                <div class="info">
+                    <p class="info-title">اليوم</p>
+                    <p class="info">{{prayerTimes.dayName}}</p>
+                </div>
+                <div class="info">
+                    <p class="info-title">التاريخ الهجري</p>
+                    <p class="info">
+                        <span>{{prayerTimes.hijriDay}}</span>
+                        <span>{{prayerTimes.hijriMonthName}}</span>
+                        <span> {{prayerTimes.hijriYear}}</span>
+                    </p>
+                </div>
+                <div class="info">
+                    <p class="info-title">التاريخ الميلادي</p>
+                    <p class="info">{{getDateASString()}}</p>
+                </div>
+            </div>
+
+            <div class="times-container">
+                <h2>أوقات الصلاة</h2>
+                <div class="card">
+                    <p class="time">الصبح</p>
+                    <p class="value">{{prayerTimes.Fajr}}</p>
+                </div>
+                <div class="card">
+                    <p class="time">شروق الشمس</p>
+                    <p class="value">{{prayerTimes.Sunrise}}</p>
+                </div>
+                <div class="card">
+                    <p class="time">وقت الإمساك</p>
+                    <p class="value">{{prayerTimes.Imsak}}</p>
+                </div>
+                <div class="card">
+                    <p class="time">الظهر</p>
+                    <p class="value">{{prayerTimes.Dhuhr}}</p>
+                </div>
+                <div class="card">
+                    <p class="time">العصر</p>
+                    <p class="value">{{prayerTimes.Asr}}</p>
+                </div>
+                <div class="card">
+                    <p class="time">المغرب</p>
+                    <p class="value">{{prayerTimes.Maghrib}}</p>
+                </div>
+                <div class="card">
+                    <p class="time">العشاء</p>
+                    <p class="value">{{prayerTimes.Isha}}</p>
+                </div>
+            </div>
+        </section>
+    }
+
+    <footer>
+        <div class="copy">جميع الحقوق محفوظة لي</div>
+    </footer>
+</div>
