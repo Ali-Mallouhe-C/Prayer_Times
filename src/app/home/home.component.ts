@@ -1,8 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ApiService } from "../services/api-service";
 import { City } from "../models/city.model";
 import { PrayerTimes } from "../models/prayer-times.model";
 import { FormsModule } from "@angular/forms";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'home',
@@ -11,13 +12,26 @@ import { FormsModule } from "@angular/forms";
   providers: [ApiService],
   imports: [FormsModule]
 })
-export class HomeComponent{
+export class HomeComponent implements OnInit, OnDestroy{
 
     searchTirm : string = "";
     showContent : boolean = false; //to hide the contnet when is no data to disply
     loading: boolean = false; //to check if is loading to play the animation and when the result reurn puse it
 
+    //create a object with type Subscription to unsubscripe when the component is destroied:
+    citySub! :Subscription; 
+    timesSub! :Subscription;
+
     constructor(private apiService: ApiService) { }
+    ngOnDestroy(){
+       //ما كان يزبط ال takeUntilDestroyed():
+        this.citySub.unsubscribe();
+        this.timesSub.unsubscribe();
+    }
+    ngOnInit(){
+        this.searchTirm = "azaz"; //defualt value
+        this.searchAboutCity();
+    }
 
     //initializing the city with empty strings
     city : City = {
@@ -42,19 +56,14 @@ export class HomeComponent{
         hijriYear : "" 
     };
 
-
-    ngOnInit() {
-        this.searchTirm = "azaz"; //defualt value
-        this.searchAboutCity();
-    }
-
     //to search about the city by the name then get the prayer times by calling getPrayerTimes:
     searchAboutCity(){
         if(this.searchTirm.trim()){
             this.loading = true; //play the animation and hide the content
             this.showContent = false;
             
-            this.apiService.getCity(this.searchTirm).subscribe( res => {
+            this.citySub = this.apiService.getCity(this.searchTirm)
+            .subscribe( res => {
                 if(res.results && res.results.length > 0){
                 this.city.name = res.results[0].name;
                 this.city.latitude = res.results[0].latitude;
@@ -83,7 +92,7 @@ export class HomeComponent{
     //to get the prayer times by date and langitude and longitude 
     //I created it in spread function to make it more readable "Sorry Teacher"
     private getPrayerTimes(date : string, latitude : number, longitude : number){
-        this.apiService
+        this.timesSub = this.apiService
             .getPrayerTimes(date, latitude, longitude)
             .subscribe( res => { //get the target info from the result 
                 const hijryDay = res.data.date.hijri.day;
